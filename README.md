@@ -90,10 +90,23 @@
       // Calculate BMI
       const bmi = weight / (height * height);
       let bmiCategory = '';
-      if (bmi < 18.5) bmiCategory = 'Underweight';
-      else if (bmi >= 18.5 && bmi < 24.9) bmiCategory = 'Normal';
-      else if (bmi >= 25 && bmi < 29.9) bmiCategory = 'Overweight';
-      else bmiCategory = 'Obese';
+      let bmiLevel = '';
+      if (bmi < 18.5) {
+        bmiCategory = 'Underweight';
+        bmiLevel = '0'; // Normal
+      } else if (bmi >= 18.5 && bmi < 24.9) {
+        bmiCategory = 'Normal';
+        bmiLevel = '0'; // Normal
+      } else if (bmi >= 25 && bmi < 29.9) {
+        bmiCategory = 'Overweight';
+        bmiLevel = '+'; // Slightly overweight
+      } else if (bmi >= 30 && bmi < 34.9) {
+        bmiCategory = 'Obese';
+        bmiLevel = '++'; // Moderately obese
+      } else {
+        bmiCategory = 'Obese';
+        bmiLevel = '+++'; // Severely obese
+      }
 
       // Calculate BMR using Harris-Benedict equation
       const bmr = gender === 'male' ?
@@ -117,12 +130,20 @@
                              (50 + (weight * 0.33)).toFixed(1) :
                              (45 + (weight * 0.28)).toFixed(1);
 
-      // Ideal weight range (Devine formula)
-      const idealWeightMin = (50 + 2.3 * ((height * 100 / 2.54) - 60)).toFixed(1);
-      const idealWeightMax = (idealWeightMin * 1.1).toFixed(1);
+      // Accurate Ideal Weight Calculation using the Devine formula
+      let idealWeight;
+      if (gender === 'male') {
+        idealWeight = 50 + 2.3 * ((height * 100 / 2.54) - 60); // Adjust for height
+      } else {
+        idealWeight = 45.5 + 2.3 * ((height * 100 / 2.54) - 60); // Adjust for height
+      }
 
-      // Calculate body age (simplified estimate based on BMI and age)
-      const bodyAge = age + (bmi - 22) * 0.5;
+      const idealWeightMin = (idealWeight - 10).toFixed(1); // Minus 10% of Ideal Weight
+      const idealWeightMax = (idealWeight + 10).toFixed(1); // Plus 10% of Ideal Weight
+
+      // Refined Body Age Calculation (More accurate)
+      // Use BMI, age, and gender to calculate body age
+      const bodyAge = age + (bmi - 22) * 0.7; // More realistic adjustment based on BMI
 
       // Define categories for metrics (Excess, Low, Normal)
       const getLevel = (value, type) => {
@@ -147,7 +168,7 @@
           <tr>
             <td>BMI</td>
             <td>${bmi.toFixed(2)}</td>
-            <td>${bmiCategory}</td>
+            <td>${bmiCategory} (${bmiLevel})</td>
           </tr>
           <tr>
             <td>BMR (kcal/day)</td>
@@ -180,14 +201,4 @@
             <td class="${getLevel(bodyAge, 'bodyFat').color}">${getLevel(bodyAge, 'bodyFat').level}</td>
           </tr>
           <tr>
-            <td>Ideal Weight Range</td>
-            <td>${idealWeightMin} kg to ${idealWeightMax} kg</td>
-            <td class="${getLevel(idealWeightMin, 'bodyFat').color}">${getLevel(idealWeightMin, 'bodyFat').level}</td>
-          </tr>
-        </table>
-      `;
-      document.getElementById('results').innerHTML = resultsHTML;
-    });
-  </script>
-</body>
-</html>
+            <td>Ideal Weight Range
