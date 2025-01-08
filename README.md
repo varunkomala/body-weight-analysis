@@ -130,20 +130,12 @@
                              (50 + (weight * 0.33)).toFixed(1) :
                              (45 + (weight * 0.28)).toFixed(1);
 
-      // Accurate Ideal Weight Calculation using the Devine formula
-      let idealWeight;
-      if (gender === 'male') {
-        idealWeight = 50 + 2.3 * ((height * 100 / 2.54) - 60); // Adjust for height
-      } else {
-        idealWeight = 45.5 + 2.3 * ((height * 100 / 2.54) - 60); // Adjust for height
-      }
+      // Ideal weight range (Devine formula)
+      const idealWeightMin = (50 + 2.3 * ((height * 100 / 2.54) - 60)).toFixed(1);
+      const idealWeightMax = (idealWeightMin * 1.1).toFixed(1);
 
-      const idealWeightMin = (idealWeight - 10).toFixed(1); // Minus 10% of Ideal Weight
-      const idealWeightMax = (idealWeight + 10).toFixed(1); // Plus 10% of Ideal Weight
-
-      // Refined Body Age Calculation (More accurate)
-      // Use BMI, age, and gender to calculate body age
-      const bodyAge = age + (bmi - 22) * 0.7; // More realistic adjustment based on BMI
+      // Calculate body age (simplified estimate based on BMI and age)
+      const bodyAge = age + (bmi - 22) * 0.5;
 
       // Define categories for metrics (Excess, Low, Normal)
       const getLevel = (value, type) => {
@@ -201,4 +193,14 @@
             <td class="${getLevel(bodyAge, 'bodyFat').color}">${getLevel(bodyAge, 'bodyFat').level}</td>
           </tr>
           <tr>
-            <td>Ideal Weight Range
+            <td>Ideal Weight Range</td>
+            <td>${idealWeightMin} kg to ${idealWeightMax} kg</td>
+            <td class="${getLevel(idealWeightMin, 'bodyFat').color}">${getLevel(idealWeightMin, 'bodyFat').level}</td>
+          </tr>
+        </table>
+      `;
+      document.getElementById('results').innerHTML = resultsHTML;
+    });
+  </script>
+</body>
+</html>
