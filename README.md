@@ -22,14 +22,26 @@
       background-color: #f4f4f4;
       border: 1px solid #ddd;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
     .positive {
-      color: red; /* Red for Excess (+) */
+      color: red;
     }
     .normal {
-      color: green; /* Green for Normal (0) */
+      color: green;
     }
     .negative {
-      color: yellow; /* Yellow for Low (-) */
+      color: yellow;
     }
   </style>
 </head>
@@ -115,25 +127,64 @@
       // Define categories for metrics (Excess, Low, Normal)
       const getLevel = (value, type) => {
         if (type === 'bodyFat') {
-          if (value < 10) return { level: 'normal', color: 'normal' }; // Green
-          else if (value >= 10 && value <= 20) return { level: 'normal', color: 'normal' }; // Green
-          else if (value > 20) return { level: 'excess', color: 'positive' }; // Red
+          if (value < 10) return { level: 'normal', color: 'normal' };
+          else if (value >= 10 && value <= 20) return { level: 'normal', color: 'normal' };
+          else if (value > 20) return { level: 'positive', color: 'positive' };
         }
-        // Add more conditions for visceral fat, skeletal muscle, etc.
-        return { level: 'normal', color: 'normal' }; // Default to green (normal)
+        // More categories for other measurements can be added here.
+        return { level: 'normal', color: 'normal' };
       };
 
-      // Display results
+      // Display results in a table format
       const resultsHTML = `
         <h2>Results for ${name}</h2>
-        <p><strong>BMI:</strong> ${bmi.toFixed(2)} (${bmiCategory})</p>
-        <p><strong>BMR:</strong> ${bmr.toFixed(2)} kcal/day</p>
-        <p><strong>Body Fat Percentage:</strong> ${bodyFatPercentage.toFixed(2)}% <span class="${getLevel(bodyFatPercentage, 'bodyFat').color}">${getLevel(bodyFatPercentage, 'bodyFat').level}</span></p>
-        <p><strong>Visceral Fat Estimate:</strong> ${visceralFat}%</p>
-        <p><strong>Subcutaneous Fat Estimate:</strong> ${subcutaneousFat}%</p>
-        <p><strong>Skeletal Muscle Estimate:</strong> ${skeletalMuscle} kg</p>
-        <p><strong>Body Age:</strong> ${Math.round(bodyAge)}</p>
-        <p><strong>Ideal Weight Range:</strong> ${idealWeightMin} kg to ${idealWeightMax} kg</p>
+        <table>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+            <th>Level</th>
+          </tr>
+          <tr>
+            <td>BMI</td>
+            <td>${bmi.toFixed(2)}</td>
+            <td>${bmiCategory}</td>
+          </tr>
+          <tr>
+            <td>BMR (kcal/day)</td>
+            <td>${bmr.toFixed(2)}</td>
+            <td class="${getLevel(bmi, 'bodyFat').color}">${getLevel(bmi, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Body Fat Percentage</td>
+            <td>${bodyFatPercentage.toFixed(2)}%</td>
+            <td class="${getLevel(bodyFatPercentage, 'bodyFat').color}">${getLevel(bodyFatPercentage, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Visceral Fat Estimate</td>
+            <td>${visceralFat}%</td>
+            <td class="${getLevel(visceralFat, 'bodyFat').color}">${getLevel(visceralFat, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Subcutaneous Fat Estimate</td>
+            <td>${subcutaneousFat}%</td>
+            <td class="${getLevel(subcutaneousFat, 'bodyFat').color}">${getLevel(subcutaneousFat, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Skeletal Muscle Estimate (kg)</td>
+            <td>${skeletalMuscle}</td>
+            <td class="${getLevel(skeletalMuscle, 'bodyFat').color}">${getLevel(skeletalMuscle, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Body Age</td>
+            <td>${Math.round(bodyAge)}</td>
+            <td class="${getLevel(bodyAge, 'bodyFat').color}">${getLevel(bodyAge, 'bodyFat').level}</td>
+          </tr>
+          <tr>
+            <td>Ideal Weight Range</td>
+            <td>${idealWeightMin} kg to ${idealWeightMax} kg</td>
+            <td class="${getLevel(idealWeightMin, 'bodyFat').color}">${getLevel(idealWeightMin, 'bodyFat').level}</td>
+          </tr>
+        </table>
       `;
       document.getElementById('results').innerHTML = resultsHTML;
     });
