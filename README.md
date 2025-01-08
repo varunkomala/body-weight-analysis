@@ -23,13 +23,13 @@
       border: 1px solid #ddd;
     }
     .positive {
-      color: green;
-    }
-    .negative {
-      color: red;
+      color: red; /* Red for Excess (+) */
     }
     .normal {
-      color: black;
+      color: green; /* Green for Normal (0) */
+    }
+    .negative {
+      color: yellow; /* Yellow for Low (-) */
     }
   </style>
 </head>
@@ -115,12 +115,12 @@
       // Define categories for metrics (Excess, Low, Normal)
       const getLevel = (value, type) => {
         if (type === 'bodyFat') {
-          if (value < 10) return { level: 'normal', color: 'normal' };
-          else if (value >= 10 && value <= 20) return { level: 'normal', color: 'normal' };
-          else if (value > 20) return { level: 'excess', color: 'positive' };
+          if (value < 10) return { level: 'normal', color: 'normal' }; // Green
+          else if (value >= 10 && value <= 20) return { level: 'normal', color: 'normal' }; // Green
+          else if (value > 20) return { level: 'excess', color: 'positive' }; // Red
         }
         // Add more conditions for visceral fat, skeletal muscle, etc.
-        return { level: 'normal', color: 'normal' };
+        return { level: 'normal', color: 'normal' }; // Default to green (normal)
       };
 
       // Display results
